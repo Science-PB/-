@@ -1,0 +1,415 @@
+############ Борис Пикунов код для решения кейса для Счетной Палаты РФ #################
+# Загрузка необходимых пакетов 
+import pandas as pd
+import pyreadstat
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+from scipy.stats import chi2_contingency
+from sklearn.linear_model import LinearRegression
+from scipy import stats
+
+# Загрузка данных в формате IBM SPSS Statistics 
+df = pd.read_spss(r"/Users/boris/Downloads/r28iall_32.sav")
+
+# Первые 5 строчек 
+df.head()
+
+# Общая информация
+df.info()
+
+# Загрузка и сохранение на компьютере датасета в формате CSV 
+df.to_csv(r"/Users/boris/Downloads/df.csv", index=False)
+
+# Загрузка датасета в среду Jupyter notebook в формате CSV
+df = pd.read_csv(r"/Users/boris/Downloads/df.csv")
+
+# Общая информация
+df.info()
+
+# Первые 5 строчек 
+df.head()
+
+# Удаление данных с неизветными значениями (NaN) для колонки "xj1"
+df = df.dropna(subset=["xj1"])
+
+# Подсчет всех значений в колонке "xj1"
+df["xj1"].value_counts()
+
+# Создание новой колонки "Занятость" по критериям 
+conditions = [
+    (df["xj1"] == "Вы сейчас работаете")|(df["xj1"] == "Вы находитесь в отпуске - декретном или по уходу за ребенком до 3-х лет")|(df["xj1"] == "Вы находитесь в любом другом оплачиваемом отпуске")|(df["xj1"] == "Вы находитесь в неоплачиваемом отпуске"),
+    
+    (df["xj1"] == "Или у Вас сейчас нет работы"),
+
+    (df["xj1"] == "ЗАТРУДНЯЮСЬ ОТВЕТИТЬ")|(df["xj1"] == "ОТКАЗ ОТ ОТВЕТА")|(df["xj1"] == "НЕТ ОТВЕТА"),
+]
+choices = ["Занят", "Безработный", "Нет Ответа"]
+df["Занятость"] = np.select(conditions, choices)
+
+# Подсчет всех значений в колонке "Занятость"
+df["Занятость"].value_counts()
+
+# Показ количества наблюдений в колонке "Занятость"
+sns.countplot(df["Занятость"], palette="Set3")
+
+# Удаление из колонки "Занятость" данных с значением "Нет Ответа"
+df.drop(df.index[df['Занятость'] == 'Нет Ответа'], inplace = True)
+
+# Удаление данных с неизветными значениями (NaN) для колонки "xj2"
+df = df.dropna(subset=["xi2"])
+
+# Создание новой колонки "Миграция" по критериям 
+conditions = [
+    (df["xi2"] == "РОССИЯ"),
+    
+    (df["xi2"] == "УКРАИНА") | (df["xi2"] == "КАЗАХСТАН") | (df["xi2"] == "АЗЕРБАЙДЖАН") | (df["xi2"] == "БЕЛОРУССИЯ") | (df["xi2"] == "АРМЕНИЯ") | (df["xi2"] == "УЗБЕКИСТАН") | (df["xi2"] == "ТАДЖИКИСТАН") | (df["xi2"] == "ГРУЗИЯ") | (df["xi2"] == "КИРГИЗИЯ") | (df["xi2"] == "ДРУГАЯ СТРАНА") | (df["xi2"] == "МОЛДАВИЯ") | (df["xi2"] == "ТУРКМЕНИЯ") | (df["xi2"] == "ЭСТОНИЯ") | (df["xi2"] == "ЛИТВА") | (df["xi2"] == "ЛАТВИЯ"),
+
+    (df["xi2"] == "НЕТ ОТВЕТА"),
+]
+choices = ["РФ", "Иммигрант", "Нет Ответа"]
+df["Миграция"] = np.select(conditions, choices, default="Нет ответа")
+
+# Показ количества наблюдений в колонке "Миграция"
+sns.countplot(df["Миграция"], palette="Set3")
+
+# Удаление из колонки "Миграция" данных с значением "Нет Ответа"
+df.drop(df.index[df['Миграция'] == 'Нет Ответа'], inplace = True)
+
+# Для запуска теста Chi-Square преобразуем данные в таблицу сопряженности
+contigency = pd.crosstab(df['Занятость'], df['Миграция']) 
+contigency
+
+# Допустим, мы хотим получить проценты по статусу миграции
+contigency_pct = pd.crosstab(df['Занятость'],df['Миграция'],  normalize='index')
+contigency_pct
+
+# Визуализируем полученный результат с использованием тепловой карты
+plt.figure(figsize=(12,8)) 
+sns.heatmap(contigency_pct, annot=True, cmap="YlGnBu")
+
+# Chi-square тест для проверки независимости переменных
+c, p, dof, expected = chi2_contingency(contigency) 
+# Print p-value
+print(p)
+
+# Создание новой колонки "Заработок для безработных" по критериям 
+conditions = [
+    (df["xj58"] == "Случайный заработок"),
+    (df["xj58"] == "Регулярный заработок"), 
+    (df["xj58"] == "ЗАТРУДНЯЮСЬ ОТВЕТИТЬ") | (df["xj58"] == "НЕТ ОТВЕТА"),
+]
+choices = ["Случайный", "Регулярный", "Нет Ответа"]
+df["Заработок для безработных"] = np.select(conditions, choices, default="Нет Ответа")
+
+# Показ количества наблюдений в колонке "Заработок для безработных"
+sns.countplot(df["Заработок для безработных"], palette="Set3")
+
+# Удаление из колонки "xj60" данных с значением 'ОТКАЗ ОТ ОТВЕТА' и 'ЗАТРУДНЯЮСЬ ОТВЕТИТЬ'
+df.drop(df.index[df['xj60'] == 'ОТКАЗ ОТ ОТВЕТА'], inplace = True)
+df.drop(df.index[df['xj60'] == 'ЗАТРУДНЯЮСЬ ОТВЕТИТЬ'], inplace = True)
+
+# Создание колонки "Денег получено" с данными типа float
+df["Денег получено"] = df["xj60"].astype("float")
+
+# Создание новой колонки "Прожиточный минимум" по критериям 
+conditions = [
+    (df["Денег получено"] <= 11468),
+    (df["Денег получено"] > 11468), 
+]
+choices = ["Ниже ПМ", "Выше ПМ"]
+df["Прожиточный минимум"] = np.select(conditions, choices, default="Нет Ответа")
+
+# Показ количества наблюдений в колонке "Прожиточный минимум"
+sns.countplot(df["Прожиточный минимум"], palette="Set3")
+
+# Подсчет всех значений в колонке "Прожиточный минимум"
+df["Прожиточный минимум"].value_counts()
+
+# Для запуска теста Chi-Square преобразуем данные в таблицу сопряженности
+contigency_1 = pd.crosstab(df['Миграция'], df["Прожиточный минимум"]) 
+contigency_1
+
+# Допустим, мы хотим получить проценты по статусу миграции
+contigency_pct_1 = pd.crosstab(df['Миграция'], df["Прожиточный минимум"],  normalize='index')
+contigency_pct_1
+
+# Визуализируем полученный результат с использованием тепловой карты
+plt.figure(figsize=(12,8)) 
+sns.heatmap(contigency_pct_1, annot=True, cmap="YlGnBu")
+
+# Chi-square тест для проверки независимости переменных
+c, p, dof, expected = chi2_contingency(contigency_1) 
+# Print p-value
+print(p)
+
+# Удаление из колонки "xj60" данных с значением 'ОТКАЗ ОТ ОТВЕТА' и 'ЗАТРУДНЯЮСЬ ОТВЕТИТЬ'
+df.drop(df.index[df['Денег получено'] <= 11468 ], inplace = True)
+
+# Перевод в тип данных float
+df["Денег получено"] = df["xj60"].astype("float")
+
+# Среднее арифметическое 
+df["Денег получено"].mean()
+
+# Максимальное значение 
+df["Денег получено"].max()
+
+# Минимальное значение 
+df["Денег получено"].min()
+
+# Стандарное отклонение 
+df["Денег получено"].std()
+
+# Медиана
+df["Денег получено"].median()
+
+# Переименование колонки 
+df["Пол"] = df["xh5"]
+
+# Для запуска теста Chi-Square преобразуем данные в таблицу сопряженности
+contigency_3 = pd.crosstab(df['Миграция'],df["Пол"] ) 
+contigency_3
+
+# Допустим, мы хотим получить проценты по статусу миграции
+contigency_pct_3 = pd.crosstab(df['Миграция'], df["Пол"],  normalize='index')
+contigency_pct_3
+
+# Визуализируем полученный результат с использованием тепловой карты
+plt.figure(figsize=(12,8)) 
+sns.heatmap(contigency_pct_3, annot=True, cmap="YlGnBu")
+
+# Chi-square тест для проверки независимости переменных
+c, p, dof, expected = chi2_contingency(contigency_3) 
+# Print  p-value
+print(p)
+
+# Для запуска теста Chi-Square преобразуем данные в таблицу сопряженности
+contigency_4 = pd.crosstab(df['Занятость'],df["Пол"] ) 
+contigency_4
+
+# Допустим, мы хотим получить проценты по статусу занятости 
+contigency_pct_4 = pd.crosstab(df['Занятость'], df["Пол"],  normalize='index')
+contigency_pct_4
+
+# Визуализируем полученный результат с использованием тепловой карты
+plt.figure(figsize=(12,8)) 
+sns.heatmap(contigency_pct_4, annot=True, cmap="YlGnBu")
+
+# Chi-square тест для проверки независимости переменных
+c, p, dof, expected = chi2_contingency(contigency_4) 
+# Print p-value
+print (p)
+
+# Создание новой таблицы с колонками "Труд_стаж", "Количество детей", "Пенсия"
+new_df = df[["xj161.3y","xj72.172","xj363"]]
+new_df.columns = ["Труд_стаж", "Количество детей", "Пенсия"]
+
+# Удаление ненужных значений 
+new_df.drop(new_df.index[new_df['Труд_стаж'] == 'ЗАТРУДНЯЮСЬ ОТВЕТИТЬ'], inplace = True)
+new_df.drop(new_df.index[new_df['Труд_стаж'] == 'ОТКАЗ ОТ ОТВЕТА'], inplace = True)
+new_df.drop(new_df.index[new_df['Труд_стаж'] == 'НЕТ ОТВЕТА'], inplace = True)
+new_df = new_df.dropna(subset=["Труд_стаж"])
+
+# Замена значение "НЕ БЫЛО СТАЖА" на 0
+new_df['Труд_стаж'] = new_df['Труд_стаж'].replace(['НЕ БЫЛО СТАЖА'],'0')
+
+# Удаление ненужных значений 
+new_df.drop(new_df.index[new_df['Количество детей'] == 'ЗАТРУДНЯЮСЬ ОТВЕТИТЬ'], inplace = True)
+new_df.drop(new_df.index[new_df['Количество детей'] == 'ОТКАЗ ОТ ОТВЕТА'], inplace = True)
+new_df.drop(new_df.index[new_df['Количество детей'] == 'НЕТ ДЕТЕЙ МОЛОЖЕ 18'], inplace = True)
+new_df = new_df.dropna(subset=["Количество детей"])
+
+# Удаление ненужных значений 
+new_df.drop(new_df.index[new_df['Пенсия'] == 'ЗАТРУДНЯЮСЬ ОТВЕТИТЬ'], inplace = True)
+new_df.drop(new_df.index[new_df['Пенсия'] == 'НЕ БЫЛО СТАЖА'], inplace = True)
+new_df.drop(new_df.index[new_df['Пенсия'] == 'ОТКАЗ ОТ ОТВЕТА'], inplace = True)
+new_df.drop(new_df.index[new_df['Пенсия'] == 'НЕТ ОТВЕТА'], inplace = True)
+new_df = new_df.dropna(subset=["Пенсия"])
+
+# Перевод значений в тип float 
+new_df["Пенсия"] = new_df["Пенсия"].astype("float")
+new_df["Количество детей"] = new_df["Количество детей"].astype("float")
+new_df["Труд_стаж"] = new_df["Труд_стаж"].astype("float")
+
+# Перевод Труд_стаж в месяцы 
+new_df["Труд_стаж"] =  new_df["Труд_стаж"] * 12
+
+# Перевод значения "Пенсия" в десятые доли
+new_df["Пенсия"] =  new_df["Пенсия"]  / 1000
+new_df.head()
+
+# Визуализация кореляции между переменными 
+corrMatrix = new_df.corr()
+sns.heatmap(corrMatrix, annot=True)
+plt.show()
+
+# Удаление колонки "Количесто детей"
+new_df.drop(columns=["Количество детей"])
+
+# Добавление к таблице колонки с полом человека 
+new_df["Пол"] = df_1["Пол"]
+new_df
+
+# Удаление колонки "Количесто детей"
+new_df.drop(columns=["Количество детей"], inplace=True)
+
+# Гистограмма трудового стажа 
+plt.style.use('ggplot')
+new_df.Труд_стаж.plot(kind='hist',color='purple',edgecolor='black',figsize=(10,7))
+plt.title('Распределение трудового стажа', size=24)
+plt.xlabel('Количество месяцев', size=18)
+plt.ylabel('Частота', size=18)
+
+# Гистограмма трудового пенсии
+new_df.Пенсия.plot(kind='hist',color='purple',edgecolor='black',figsize=(10,7))
+plt.title('Распределение пенсий', size=24)
+plt.xlabel("Количество денег/1000", size=18)
+plt.ylabel('Частота', size=18);
+
+# Гистограмма трудового трудового стажа для Мужчин и Женщин
+new_df[new_df['Пол']=='МУЖСКОЙ'].Труд_стаж.plot(kind='hist',color='blue',edgecolor='black',alpha=0.5,figsize=(10,7))
+new_df[new_df['Пол']=='ЖЕНСКИЙ'].Труд_стаж.plot(kind='hist',color='magenta',edgecolor='black',alpha=0.5,figsize=(10,7))
+plt.legend(labels=['Мужчины','Женщины'])
+plt.title('Распределение трудового стажа', size=24)
+plt.xlabel('Количество месяцев', size=18)
+plt.ylabel('Частота', size=18);
+
+# Гистограмма пенсии для Мужчин и Женщин
+new_df[new_df['Пол']=='МУЖСКОЙ'].Пенсия.plot(kind='hist',color='blue',edgecolor='black',alpha=0.5,figsize=(10,7))
+new_df[new_df['Пол']=='ЖЕНСКИЙ'].Пенсия.plot(kind='hist',color='magenta',edgecolor='black',alpha=0.5,figsize=(10,7))
+plt.legend(labels=['Мужчины','Женщины'])
+plt.title('Распределение пенсий', size=24)
+plt.xlabel('Количество денег/1000', size=18)
+plt.ylabel('Частота', size=18);
+
+# Точечная диаграмма для стажа и пенсии
+ax1= new_df[new_df["Пол"]=='МУЖСКОЙ'].plot(kind='scatter', x='Труд_стаж',y='Пенсия', color='blue',alpha=0.5, figsize=(10,7))
+new_df[new_df['Пол']=='ЖЕНСКИЙ'].plot(kind='scatter', x='Труд_стаж',y='Пенсия', color='magenta',alpha=0.5, figsize=(10,7),ax=ax1)
+plt.legend(labels=['Мужчины','Женщины'])
+plt.title('Взаимоотношение между стажем и пенсией', size=24)
+plt.xlabel('Стаж (месяцы)', size=18)
+plt.ylabel('Пенсия (рублей/1000)', size=18);
+
+# Точечная диаграмма из 500 Женщин 
+sample_females = new_df[new_df['Пол']=='ЖЕНСКИЙ'].sample(500)
+sample_females.plot(kind='scatter', x='Труд_стаж',y='Пенсия', color='magenta',alpha=0.5, figsize=(10,7))
+plt.legend(labels=['Females'])
+plt.title('Взаимоотношение между стажем и пенсией (выборка 500 женщин)', size=20)
+plt.xlabel('Стаж (месяцы)', size=18)
+plt.ylabel('Пенсия (рублей/1000)', size=18);
+
+# Полиномы наилучшего соответствия
+
+df_males = new_df[new_df["Пол"]=='МУЖСКОЙ']
+df_females = new_df[new_df['Пол']=='ЖЕНСКИЙ']
+
+# Полиномиальные Мужской пол  
+male_fit = np.polyfit(df_males.Труд_стаж,df_males.Пенсия,1)
+# [0.01373234 11.7699456]
+
+# Полиномиальный Женский пол 
+female_fit = np.polyfit(df_females.Труд_стаж,df_females.Пенсия,1)
+# [0.01554799 9.50653349]
+ 
+print (male_fit)
+print (female_fit)
+
+# Линейная регрессия используя seaborn
+fig = plt.figure(figsize=(10,7))
+sns.regplot(x=df_males.Труд_стаж,y=df_males.Пенсия,color='blue', marker='+')
+sns.regplot(x=df_females.Труд_стаж,y=df_females.Пенсия,color='magenta', marker='+')
+
+# Legend, title и labels
+plt.legend(labels=['Мужчины','Женщины'])
+plt.title('Взаимоотношение между стажем и пенсией', size=24)
+plt.xlabel('Стаж (месяцы)', size=18)
+plt.ylabel('Пенсия (рублей/1000)', size=18);
+
+# Выборки
+df_males_sample= new_df[new_df['Пол']=='МУЖСКОЙ'].sample(300)
+df_females_sample= new_df[new_df['Пол']=="ЖЕНСКИЙ"].sample(300)
+
+# Регрессия используя seaborn
+fig = plt.figure(figsize=(10,7))
+sns.regplot(x=df_males_sample.Труд_стаж,y=df_males_sample.Пенсия,color='blue', marker='+')
+sns.regplot(x=df_females_sample.Труд_стаж,y=df_females_sample.Пенсия,color='magenta', marker='+')
+
+# Legend, title и labels
+plt.legend(labels=['Мужчины','Женщины'])
+plt.title('Взаимоотношение между стажем и пенсией', size=24)
+plt.xlabel('Стаж (месяцы)', size=18)
+plt.ylabel('Пенсия (рублей/1000)', size=18);
+
+df_males = new_df[new_df['Пол']=='МУЖСКОЙ']
+
+# Создать объект линейной регрессии
+lr_males= LinearRegression()
+
+# Применить linear линейную регрессию
+lr_males.fit(df_males[['Труд_стаж']], df_males['Пенсия'])
+
+# Получить наклон и точку пересечения линии, которая лучше всего подходит
+print(lr_males.intercept_)
+# 11.769945604654925
+
+print(lr_males.coef_)
+# 0.01373234
+
+df_females = new_df[new_df['Пол']=='ЖЕНСКИЙ']
+
+# Создать объект линейной регрессии
+lr_females= LinearRegression()
+
+# Применить linear линейную регрессию
+lr_females.fit(df_females[['Труд_стаж']], df_females['Пенсия'])
+
+# Получить наклон и точку пересечения линии, которая лучше всего подходит
+print(lr_females.intercept_)
+# 9.506533494209027
+
+print(lr_females.coef_)
+# 0.01554799
+
+df_females = new_df[new_df['Пол']=='ЖЕНСКИЙ']
+
+# Применить модель используя numpy
+female_fit = np.polyfit(df_females.Труд_стаж,df_females.Пенсия,1)
+
+# Предсказания используя numpy
+print(np.polyval(female_fit,[576]))
+# 18.46217422
+
+# Применить модель используя scikit learn.
+lr_females= LinearRegression()
+lr_females.fit(df_females[['Труд_стаж']], df_females['Пенсия'])
+
+# Предсказания используя scikit learn.
+print(lr_females.predict([[576]]))
+# 18.46217422
+
+# Проверка предсказания 
+new_df.head(1)
+
+# Таблица содержащая только Женский пол 
+df_females = new_df[new_df['Пол']=='ЖЕНСКИЙ']
+
+# Коэффициент корреляции Пирсона и p-value
+pearson_coef, p_value = stats.pearsonr(df_females.Труд_стаж, df_females.Пенсия)
+
+print(pearson_coef)
+# 0.31190110310965846
+
+print(p_value)
+# 2.6470864501346614e-41
+
+# Таблица содержащая только Мужской пол 
+df_males = new_df[new_df['Пол']=='МУЖСКОЙ']
+
+# Коэффициент корреляции Пирсона и p-value
+pearson_coef, p_value = stats.pearsonr(df_males.Труд_стаж, df_males.Пенсия)
+
+print(pearson_coef)
+# 0.2230896731746995
+print(p_value)
+# 2.117330119235022e-10
