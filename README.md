@@ -6,7 +6,6 @@
 
 <img width="1051" alt="Screen Shot 2020-12-27 at 3 37 01 AM" src="https://user-images.githubusercontent.com/66921930/103167125-5cd63080-47f6-11eb-8690-0dfc917adb4e.png">
 
-<img width="1040" alt="Screen Shot 2020-12-27 at 3 41 36 AM" src="https://user-images.githubusercontent.com/66921930/103167127-5d6ec700-47f6-11eb-943e-878ed373aa05.png">
 
 
 Для удобства переведем данные из category в object тип данных и выведем 5 первых строк. 
