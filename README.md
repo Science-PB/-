@@ -82,28 +82,26 @@
 Переименование колонки  "xh5" в "Пол", создаем таблицу сопряженности и переводим ее в проценты.
 
 
-
-
-
+<img width="589" alt="Screen Shot 2020-12-27 at 4 15 54 AM" src="https://user-images.githubusercontent.com/66921930/103167641-dc65fe80-47fa-11eb-99f8-842aaedce9e5.png">
 
 
 Визуализация полученых данных, проведения теста и показ результата P-Value.
 
 
 
-
+<img width="704" alt="Screen Shot 2020-12-27 at 4 17 24 AM" src="https://user-images.githubusercontent.com/66921930/103167642-dcfe9500-47fa-11eb-95e8-7cc5d79ec793.png">
 
 
 
 Создаем таблицу сопряженности для колонок "Занятость" и "Пол", переводим ее в проценты.
 
-
+<img width="610" alt="Screen Shot 2020-12-27 at 4 19 49 AM" src="https://user-images.githubusercontent.com/66921930/103167643-dd972b80-47fa-11eb-9393-ece318e02388.png">
 
 
 
 Визуализация полученых данных, проведения теста и показ результата P-Value.
 
-
+<img width="698" alt="Screen Shot 2020-12-27 at 4 20 07 AM" src="https://user-images.githubusercontent.com/66921930/103167644-dd972b80-47fa-11eb-89b7-2480aba1aaad.png">
 
 
 
