@@ -29,13 +29,15 @@
 Создадим новую колонку "Миграция" по определнным параметрам и визуализируем результат. Удалим при этом неизветсные значения. 
 
 
-
+<img width="983" alt="Screen Shot 2020-12-27 at 3 52 00 AM" src="https://user-images.githubusercontent.com/66921930/103167311-2994a100-47f8-11eb-9ede-efc4dbffed31.png">
+en Shot 2020-12-27 at 3 55 42 AM" src="https://user-images.githubusercontent.com/66921930/103167313-2ac5ce00-47f8-11eb-81e6-c5d0c2aa9fed.png">
+<img width="657" alt="Screen Shot 2020-12-27 at 3 58 10 AM" src="https://user-images.githubusercontent.com/66921930/103167314-2b5e6480-47f8-11eb-9a30-18a6668e66cf.png">
 
 
 Удалим из колнки "Миграция" данных с значением "Нет Ответа" и создадим таблицу сопряженности для сравнения параметров "Занятость" и "Миграция". Привидем данные в этой таблице в проценты. 
 
 
-
+<img width="622" alt="Screen Shot 2020-12-27 at 3 53 25 AM" src="https://user-images.githubusercontent.com/66921930/103167312-2ac5ce00-47f8-11eb-8128-f44854917a04.png">
 
 
 
