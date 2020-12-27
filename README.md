@@ -57,25 +57,25 @@
 
 
 
-
+<img width="704" alt="Screen Shot 2020-12-27 at 4 03 14 AM" src="https://user-images.githubusercontent.com/66921930/103167497-7dec5080-47f9-11eb-936d-1c93ca05304e.png">
 
 
 
 Подсчет всех значений в колонке "Прожиточный минимум", создаем таблицу сопряженности и переводим ее в проценты.
 
 
-
+<img width="678" alt="Screen Shot 2020-12-27 at 4 05 34 AM" src="https://user-images.githubusercontent.com/66921930/103167499-7f1d7d80-47f9-11eb-8d7c-a1f0b1aa5960.png">
 
 
 Визуализация полученых данных, проведения теста и показ результата P-Value.
 
-
+<img width="679" alt="Screen Shot 2020-12-27 at 4 07 34 AM" src="https://user-images.githubusercontent.com/66921930/103167500-7f1d7d80-47f9-11eb-87b7-76f4f5dc3c01.png">
 
 
 
 Удаление из колонки "xj60" данных с значением 'ОТКАЗ ОТ ОТВЕТА' и 'ЗАТРУДНЯЮСЬ ОТВЕТИТЬ', подсчет данных для описательной статистики. 
 
-
+<img width="692" alt="Screen Shot 2020-12-27 at 4 09 08 AM" src="https://user-images.githubusercontent.com/66921930/103167501-7fb61400-47f9-11eb-961d-19c34c8423e7.png">
 
 
 
