@@ -108,23 +108,25 @@
 Создание новой таблицы с колонками "Труд_стаж", "Количество детей", "Пенсия". Очистка и подготовка данных для анализа. Показ полученой таблицы.
 
 
+<img width="706" alt="Screen Shot 2020-12-27 at 4 25 24 AM" src="https://user-images.githubusercontent.com/66921930/103167749-d6245200-47fb-11eb-96dc-9cb8eeb90b1c.png">
 
 
 
 Визуализация кореляции между переменными.
 
 
-
+<img width="448" alt="Screen Shot 2020-12-27 at 4 25 36 AM" src="https://user-images.githubusercontent.com/66921930/103167750-d7557f00-47fb-11eb-8290-15233766b001.png">
 
 
 
 Удаление колонки "Количесто детей" и построение гистограммы которая показывает Распределение трудового стажа. 
 
-
+<img width="655" alt="Screen Shot 2020-12-27 at 4 26 09 AM" src="https://user-images.githubusercontent.com/66921930/103167751-d7ee1580-47fb-11eb-8b73-46d21efbc128.png">
 
 
 
 Построение гистограммы которая показывает Распределение пенсий. 
 
 
+<img width="654" alt="Screen Shot 2020-12-27 at 4 26 16 AM" src="https://user-images.githubusercontent.com/66921930/103167752-d886ac00-47fb-11eb-8e32-9cb8885e28e2.png">
 
