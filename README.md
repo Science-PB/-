@@ -179,12 +179,14 @@
 
 Предсказание значения и его проверка используя numpy и scikit learn
 
+<img width="546" alt="Screen Shot 2020-12-27 at 4 40 46 AM" src="https://user-images.githubusercontent.com/66921930/103168027-fd7c1e80-47fd-11eb-94fc-dde6c089eb7b.png">
+
 
 
 Подсчет коэффициента корреляции Пирсона и p-value для Мужчин и Женщин 
 
 
-
+<img width="602" alt="Screen Shot 2020-12-27 at 4 41 54 AM" src="https://user-images.githubusercontent.com/66921930/103168028-fe14b500-47fd-11eb-8e19-8f9cc909c2c0.png">
 
 
 
