@@ -156,21 +156,34 @@
 
 Создание полиномов наилучшего соответствия, это тоже не отраженно в аналитической записке. Это было сделано для сравнивания методов анализа и поиска наулучшего.
 
-
+<img width="509" alt="Screen Shot 2020-12-27 at 4 34 48 AM" src="https://user-images.githubusercontent.com/66921930/103167956-8b0b3e80-47fd-11eb-810d-de103b909b7e.png">
 
 
 Построение и визуализация линеной регресиии. 
 
 
-
+<img width="671" alt="Screen Shot 2020-12-27 at 4 36 58 AM" src="https://user-images.githubusercontent.com/66921930/103167957-8ba3d500-47fd-11eb-85f1-ac26b3744ac6.png">
 
 
 Создание выборки из 300 человек, построение линеной регресии для выборки. 
 
-
+<img width="733" alt="Screen Shot 2020-12-27 at 4 38 08 AM" src="https://user-images.githubusercontent.com/66921930/103167958-8c3c6b80-47fd-11eb-9580-5b00c4e46957.png">
 
 
 Получение наклона и точки пересечения для Мужчин и Женщин.
+
+<img width="562" alt="Screen Shot 2020-12-27 at 4 38 40 AM" src="https://user-images.githubusercontent.com/66921930/103167959-8cd50200-47fd-11eb-8249-9a91e44428fb.png">
+
+
+
+
+Предсказание значения и его проверка используя numpy и scikit learn
+
+
+
+Подсчет коэффициента корреляции Пирсона и p-value для Мужчин и Женщин 
+
+
 
 
 
